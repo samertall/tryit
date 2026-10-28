@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#081426">
+<meta name="description" content="WordTrail AR: interactive spatial phonics concept for SPECS glasses. Browser simulator only—not a Lens Studio or CLAD build.">
+<title>WordTrail AR — Spatial Phonics Concept</title>
+<style>
+:root{color-scheme:dark;--bg:#081426;--surface:#11253a;--border:#263e58;--muted:#9fb8ca;--lime:#d0fa8d;--ink:#effaff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}button{font:inherit}button:focus-visible,input:focus-visible{outline:3px solid var(--lime);outline-offset:4px}
+header{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 4vw;border-bottom:1px solid #2a4156}header .brand{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:900;letter-spacing:.1em}header .brand em{color:var(--lime);font-style:normal}.brandmark{width:40px;height:40px;border-radius:14px 14px 14px 3px;background:var(--lime);display:grid;place-items:center;color:#132e31;font-size:24px;font-weight:900}.tag{border:1px solid #446279;color:#c5dfed;padding:8px 12px;border-radius:30px;font-size:10px;letter-spacing:.09em}
+main{max-width:1540px;margin:0 auto;padding:36px 4vw 50px;display:grid;grid-template-columns:320px minmax(0,1fr);gap:34px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:var(--lime);font-weight:800}.intro h1{font-size:clamp(37px,4vw,53px);line-height:1.07;letter-spacing:-.055em;margin:13px 0}.intro h1 span{color:var(--lime)}.lead{color:#aec1d2;line-height:1.7;margin:0 0 26px;max-width:35ch}.rule{height:1px;background:var(--border);margin:24px 0}.roundHead{display:flex;justify-content:space-between;align-items:end}.roundHead h2{margin:5px 0 0;font-size:19px}.count{color:#86a3b8}.clue{border:1px solid #315064;background:#123246;border-radius:14px;padding:16px;margin:18px 0}.clue small{font-size:9px;letter-spacing:.18em;color:#92d9d6;font-weight:700}.clue p{font-size:15px;margin:5px 0 0;color:#f1fffd}.slots{display:flex;gap:10px;margin:14px 0}.slot{height:58px;width:58px;display:grid;place-items:center;border-radius:12px;border:1px solid #48677b;background:#152d43;color:var(--lime);font-weight:800;font-size:27px}.slot.empty{color:#8ba2b6}.feedback{min-height:45px;color:#b8d1e0;margin:14px 0}.actions{display:flex;gap:8px}.actions button,.bar button{border-radius:11px;cursor:pointer;font-weight:750;padding:11px 15px}.primary{background:var(--lime);border:1px solid var(--lime);color:#163236}.primary:disabled{opacity:.35;cursor:default}.secondary{border:1px solid #436076;background:#14283d;color:#d9e9f2}.tips{margin-top:25px;color:#a5becb;font-size:12px}.tips span{display:block;margin-top:9px}kbd{padding:3px 6px;border:1px solid #4d6e82;border-radius:5px;color:white;background:#172c42;margin-right:2px;font:inherit}
+.stagehead{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:16px}.stagehead h2{font-size:25px;margin:5px 0 0;letter-spacing:-.045em}.simlabel{font-size:10px;letter-spacing:.1em;color:#bed2de}
+.scene{height:min(590px,63vw);min-height:430px;position:relative;overflow:hidden;border:1px solid #416984;border-radius:24px;background:linear-gradient(#688c96 0 53%,#3d6672 53% 70%,#2c4b5c 70%);box-shadow:0 25px 80px #0006;isolation:isolate}
+.scene:before{content:"";position:absolute;left:5%;top:2%;height:58%;width:82%;border-radius:0 0 65% 65%;border:3px solid #b9e2d135;border-top:0;background:radial-gradient(ellipse at 54% 0,#d4e7b434,transparent 65%)}
+.scene:after{content:"";position:absolute;inset:0;z-index:8;pointer-events:none;box-shadow:inset 0 0 100px #082339a8}
+.window{position:absolute;right:7%;top:12%;width:125px;height:165px;border:11px solid #81a2a4;border-radius:75px 75px 5px 5px;background:linear-gradient(#c6e6dc 0 62%,#a0c9a1 62% 100%);box-shadow:0 0 40px #e3ecb783}.window:before{content:"";position:absolute;top:0;bottom:0;left:49%;width:10px;background:#81a2a4}
+.world{position:absolute;inset:0;transform:translateX(var(--pan,0px));transition:transform .3s}
+.tableleg{position:absolute;top:64%;left:18%;width:65%;height:52%;border-left:23px solid #735f57;border-right:23px solid #735f57}
+.table{position:absolute;left:13%;top:49%;width:74%;height:46%;border-radius:27px;border:13px solid #a68a76;background:linear-gradient(105deg,#d2bea6,#bba38e);transform:perspective(600px) rotateX(53deg);box-shadow:0 40px 0 #584b47,0 50px 58px #112838b6}
+.table:before{content:"";position:absolute;inset:9%;border-radius:19px;border:2px dashed #5d8c8c90;background:radial-gradient(#8bd2d65c,transparent 65%)}
+.worldprompt{position:absolute;z-index:3;top:33%;left:27%;width:46%;text-align:center;background:#16475adb;border:1px solid #e2faffb9;border-radius:13px;padding:9px 15px;box-shadow:0 8px 20px #092a3a77}.worldprompt span{display:block;font-size:10px;letter-spacing:.16em;color:#cffe99;font-weight:800}.worldprompt strong{font-size:21px;letter-spacing:.07em}.worldprompt small{display:block;color:#d2f0ed;font-size:10px}
+.stone{--x:50%;--y:69%;position:absolute;z-index:5;top:var(--y);left:var(--x);transform:translate(-50%,-50%);width:clamp(70px,8vw,115px);height:clamp(70px,8vw,115px);border-radius:50%;border:3px solid #e8fff0;cursor:pointer;background:radial-gradient(circle at 29% 22%,#51bdba,#137f91 65%,#155269);box-shadow:0 0 0 8px #e2ffd02d,0 14px 0 #1d5269,0 19px 23px #072534a1;color:#fff;display:flex;justify-content:center;align-items:center;flex-direction:column;transition:transform .15s,filter .2s,opacity .2s}
+.stone:hover,.stone:focus-visible{transform:translate(-50%,-58%) scale(1.08);filter:brightness(1.2)}.stone b{font-size:clamp(32px,4vw,47px);line-height:1}.stone small{font-size:9px;letter-spacing:.16em}.stone.used{background:radial-gradient(circle at 35% 25%,#acd46f,#4e9475 70%,#2b7074);border-color:var(--lime);box-shadow:0 0 0 11px #d4ffa04e,0 14px 0 #326858}.stone:disabled{cursor:default;opacity:.58}.stone.bad{animation:shake .4s}
+@keyframes shake{0%,100%{translate:0}30%{translate:-13px}60%{translate:13px}}
+.reward{position:absolute;z-index:7;left:50%;top:52%;text-align:center;transform:translate(-50%,-50%) scale(.7);opacity:0;pointer-events:none;transition:opacity .3s,transform .4s;filter:drop-shadow(0 12px 21px #082d39a0)}.reward.visible{opacity:1;transform:translate(-50%,-65%) scale(1)}.reward span{font-size:clamp(75px,10vw,120px);display:block}.reward strong{font-size:45px;letter-spacing:.12em;color:var(--lime);text-shadow:0 5px 18px #134c56}.reward small{display:block;font-weight:800;letter-spacing:.16em;font-size:11px;color:white;background:#21576ed8;padding:7px;border-radius:25px}
+.sceneTop,.sceneBottom{position:absolute;left:25px;right:25px;z-index:9;display:flex;justify-content:space-between;color:#f1f7f8;font-size:10px;letter-spacing:.07em}.sceneTop{top:24px}.sceneBottom{bottom:21px}.sceneTop span,.sceneBottom span{padding:7px 11px;border:1px solid #c4e1e570;border-radius:6px;background:#10344498}.sceneTop strong{color:var(--lime)}.sceneBottom em{font-style:normal;color:var(--lime)}
+.reticle{position:absolute;top:50%;left:50%;height:19px;width:19px;z-index:6;pointer-events:none;border:1px dashed #e4ffffaa;border-radius:50%}
+.bar{margin:15px 0;display:flex;gap:18px;align-items:center;flex-wrap:wrap}.bar label{display:flex;gap:9px;align-items:center;color:#a4becf;font-size:11px}.bar input{width:105px;accent-color:var(--lime)}.bar button{font-size:12px}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.features>div{padding:15px;background:#13263b;border:1px solid #29455d;border-radius:13px}.features b{font-size:12px}.features p{font-size:11px;color:#96b1c4;line-height:1.5;margin:6px 0 0}.warning{border-left:2px solid var(--lime);padding:13px 16px;background:#0e1f32;color:#a8bfce;font-size:12px;line-height:1.55}.warning strong{color:var(--ink)}footer{padding:24px 4vw;border-top:1px solid #263d53;color:#8baabc;font-size:11px}
+@media(max-width:900px){main{grid-template-columns:1fr;gap:20px}.intro h1{max-width:550px}.intro .lead{max-width:75ch}.scene{height:560px}.features{grid-template-columns:1fr 1fr}}@media(max-width:550px){header{height:auto;min-height:75px;flex-wrap:wrap;padding:12px 5vw}.tag{font-size:9px}main{padding:20px 4vw}.scene{height:490px;min-height:0}.worldprompt{left:15%;width:70%;top:34%}.worldprompt strong{font-size:16px}.stone{width:70px;height:70px}.stone b{font-size:30px}.stone small{font-size:7px}.features{grid-template-columns:1fr}.sceneBottom span:last-child{display:none}.stagehead h2{font-size:21px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="brandmark">w.</div><div>WORDTRAIL <em>AR</em><div class="eyebrow">SPATIAL PHONICS LAB</div></div></div><div class="tag">INTERACTIVE WEB CONCEPT · NOT LENS STUDIO</div></header>
+<main>
+<aside class="intro">
+<div class="eyebrow">THE LEARNING EXPERIENCE</div><h1>Words you<br><span>can explore.</span></h1>
+<p class="lead">Imagine phonics in your room, not on a screen. Follow the sound stones, build a word and reveal a little surprise.</p>
+<div class="rule"></div>
+<div class="roundHead"><div><div class="eyebrow">CURRENT TRAIL</div><h2 id="trailTitle">The Curious Cat</h2></div><span class="count" id="roundCount">01 / 02</span></div>
+<div class="clue"><small>✦ YOUR CLUE</small><p id="clue">A furry pet that says meow</p></div>
+<div class="eyebrow">BUILD THE WORD</div><div id="slots" class="slots" aria-label="Spelling progress"></div>
+<p id="feedback" class="feedback" aria-live="polite"></p>
+<div class="actions"><button class="primary" id="next" disabled>Next trail ↗</button><button class="secondary" id="restart">Restart ↺</button></div>
+<div class="rule"></div>
+<div class="eyebrow">HOW TO EXPLORE</div>
+<div class="tips"><span><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> Pick sound stones</span><span><kbd>←</kbd><kbd>→</kbd> Change your viewpoint</span><span><kbd>R</kbd> Restart adventure</span></div>
+</aside>
+<section>
+<div class="stagehead"><div><div class="eyebrow">A PLAYABLE SPATIAL CONCEPT</div><h2>A little world of big discoveries.</h2></div><div class="simlabel">SIMULATED VIEW · 2 ROUNDS</div></div>
+<div class="scene" id="scene" aria-label="Concept scene showing sound stones on a virtual table">
+<div class="window"></div><div class="sceneTop"><span>◎ WORLD-SPACE LEARNING</span><span><strong>●</strong> SIMULATION ONLINE</span></div>
+<div class="world" id="world"><div class="tableleg"></div><div class="table"></div>
+<div class="worldprompt"><span>YOUR MISSION</span><strong>BUILD A WORD</strong><small>Follow the clue · Pinch the right letters</small></div>
+<div id="stones"></div><div class="reward" id="reward"><span id="emoji">🐈</span><strong id="reveal">CAT</strong><small>WORD BUILT!</small></div></div>
+<div class="reticle"></div>
+<div class="sceneBottom"><span id="view">◉ TABLETOP · VIEW 0°</span><span>CLICK OR PRESS 1–4 <em>· PINCH SIMULATION</em></span></div>
+</div>
+<div class="bar"><label>LOOK AROUND <input type="range" id="pan" min="-32" max="32" value="0"></label><button class="secondary" id="demo">Watch concept walkthrough ▶</button><label><input type="checkbox" id="speak"> Read feedback aloud</label></div>
+<div class="features"><div><b>◎ Spatial by design</b><p>Sound stones are placed right on the task surface.</p></div><div><b>◈ One simple gesture</b><p>Large, forgiving targets and immediate feedback.</p></div><div><b>✳ Progressive reveal</b><p>The reward appears only after the word is complete.</p></div></div>
+<div class="warning"><strong>Prototype disclosure:</strong> This is a browser interaction simulator, NOT an exported SPECS Lens or CLAD/Lens Studio build. The required hackathon demo must show the genuine Lens Studio Interactive Preview.</div>
+</section>
+</main>
+<footer>WORDTRAIL AR · Concept developed October 28, 2026 · A preparation asset for Learn AR with SPECS · No camera capture or personal-data collection</footer>
+<script type="module">
+import {createGame,currentLevel,selectLetter,advance,restart} from "./core/wordtrail-engine.mjs";
+let state=createGame();let isDemo=false;let generation=0;
+const $=id=>document.getElementById(id);
+const names=["The Curious Cat","Hello Sunshine"];const coords=[["23%","67%"],["42%","74%"],["61%","70%"],["79%","65%"]];
+function read(text){if($("speak").checked && "speechSynthesis" in window){window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(text);utterance.rate=.85;window.speechSynthesis.speak(utterance);}}
+function draw(){const l=currentLevel(state);const done=state.status==="complete"||state.status==="finished";
+$("trailTitle").textContent=names[state.round];$("roundCount").textContent="0"+(state.round+1)+" / 02";$("clue").textContent=l.clue;$("feedback").textContent=state.feedback;
+$("slots").replaceChildren(...l.word.split("").map((v,i)=>{const span=document.createElement("span");span.className="slot"+(i>=state.selection.length?" empty":"");span.textContent=i<state.selection.length?state.selection[i].toUpperCase():"_";return span;}));
+const field=$("stones");field.replaceChildren(...l.tiles.map((letter,i)=>{const b=document.createElement("button");b.className="stone"+(state.selection.includes(letter)?" used":"");b.style.setProperty("--x",coords[i][0]);b.style.setProperty("--y",coords[i][1]);b.setAttribute("aria-label","Select letter "+letter+", stone "+(i+1));b.disabled=done;b.innerHTML="<b></b><small>SOUND "+(i+1)+"</small>";b.querySelector("b").textContent=letter.toUpperCase();b.onclick=()=>pick(letter,i);return b;}));
+$("reward").classList.toggle("visible",done);$("emoji").textContent=state.round===0?"🐈":"☀️";$("reveal").textContent=l.word.toUpperCase();$("next").disabled=!done||state.status==="finished";$("next").textContent=state.round===0?"Next trail ↗":"Finish trail ✓";
+}
+function pick(letter,i){const result=selectLetter(state,letter);state=result.state;if(result.event==="incorrect"){draw();const stone=$("stones").children[i];stone.classList.add("bad");setTimeout(()=>stone.classList.remove("bad"),500);}else{draw();}if(result.event!=="blocked"){read(state.feedback);}}
+function next(){const out=advance(state);state=out.state;draw();read(state.feedback);}
+function reset(){generation++;state=restart();isDemo=false;$("demo").disabled=false;$("pan").value="0";look(0);draw();}
+function look(deg){$("world").style.setProperty("--pan",deg*1.6+"px");$("view").textContent="◉ TABLETOP · VIEW "+deg+"°";}
+$("next").onclick=next;$("restart").onclick=reset;$("pan").oninput=e=>look(Number(e.target.value));
+document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA"].includes(document.activeElement.tagName))return;if(/^[1-4]$/.test(e.key))$("stones").children[Number(e.key)-1]?.click();else if(e.key==="ArrowLeft"||e.key==="ArrowRight"){e.preventDefault();$("pan").value=Number($("pan").value)+(e.key==="ArrowLeft"?-8:8);look(Number($("pan").value));}else if(e.key.toLowerCase()==="r"&&!e.ctrlKey&&!e.metaKey)reset();});
+$("demo").onclick=async()=>{reset();isDemo=true;const g=++generation;$("demo").disabled=true;const delay=ms=>new Promise(r=>setTimeout(r,ms));for(const c of ["c","a","t","next","s","u","n","finish"]){if(g!==generation)return;await delay(c==="next"?1550:900);if(g!==generation)return;if(c==="next"||c==="finish")next();else{const index=currentLevel(state).tiles.indexOf(c);pick(c,index);}}isDemo=false;$("demo").disabled=false;};
+draw();
+</script>
+</body>
+</html>
